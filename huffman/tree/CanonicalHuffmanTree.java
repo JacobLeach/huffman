@@ -3,6 +3,7 @@ package huffman.tree;
 import huffman.CanonicalHuffmanCode;
 import huffman.CharacterFrequency;
 import huffman.HuffmanCode;
+import huffman.HuffmanCodeAlphabeticalOrder;
 import huffman.HuffmanCodeDescendingOrder;
 import huffman.StringUtils;
 
@@ -12,9 +13,34 @@ import java.util.List;
 
 public class CanonicalHuffmanTree
 {
+    private List<CanonicalHuffmanCode> _codes;
+    
     public CanonicalHuffmanTree(List<HuffmanCode> codes)
     {
+        _codes = generateCanonicalCodes(codes);
+    }
+    
+    public byte[] getEncodingBook()
+    {
+        byte[] book = new byte[1 + (_codes.size() * 2)];
+        book[0] = (byte) _codes.size();
 
+        // Get a sorted list of codes
+        Collections.sort(_codes, new HuffmanCodeAlphabeticalOrder());
+
+        // Put the char values into the byte array
+        for (int i = 0; i < _codes.size(); i++)
+        {
+            book[(i * 2) + 1] = (byte) _codes.get(i).getCharacter().charValue();
+            book[(i * 2) + 2] = (byte) _codes.get(i).getCode().length();
+        }
+
+        return book;
+    }
+    
+    public List<CanonicalHuffmanCode> getCodes()
+    {
+        return _codes;
     }
 
     public List<CanonicalHuffmanCode> generateCanonicalCodes(List<HuffmanCode> codes)
@@ -100,6 +126,11 @@ public class CanonicalHuffmanTree
 
         // Try 1 (Really like 4th distinct try 1)
 
+        /*
+         * This only did not work before because of bugs in my shiftLeft and addOne methods. :(
+         * Really should have done more unit testing.
+         */
+        
         String code = "0";
         while (code.length() < copy.get(0).getCodeLength())
         {

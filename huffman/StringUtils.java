@@ -38,7 +38,20 @@ public class StringUtils
         System.out.println(test + " to " + StringUtils.shiftRight(test, shift));
 
         int intTest = 29;
-        System.out.println(Integer.toBinaryString(intTest) + " to " + Integer.toBinaryString(intTest >> shift));
+        System.out.println(Integer.toBinaryString(intTest) + " and " + intToString(intTest));
+    }
+    
+    public static String intToString(int a)
+    {
+        String asString = "";
+
+        for(byte i = 0; i < 8; i++)
+        {
+            asString = (((a % 2) == 0) ? "0" : "1") + asString;
+            a >>= 1;
+        }
+        
+        return asString;
     }
 
     public static String shiftLeft(String code, long shift)

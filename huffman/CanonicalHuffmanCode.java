@@ -11,6 +11,16 @@ public class CanonicalHuffmanCode
         _code = code;
     }
     
+    public Character getCharacter()
+    {
+        return _character;
+    }
+    
+    public String getCode()
+    {
+        return _code;
+    }
+    
     @Override
     public String toString()
     {
