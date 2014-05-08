@@ -11,8 +11,6 @@ public class StringUtils
             newCode = "0" + newCode;
             code = code.substring(0, code.length() - 1);
         }
-
-        System.out.println("ADD: " + code + ", Length: " + code.length());
         
         if (code.length() == 1 && code.charAt(0) == '0')
         {

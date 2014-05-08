@@ -17,13 +17,16 @@ public class Encode
 {
     public static void main(String[] args)
     {
-        encode(new File("sample5.txt"), new File("test.huf"));
+        long time = System.currentTimeMillis();
+        encode(new File("veryLarge.txt"), new File("test.huf"));
+        System.out.println("Took: " + (System.currentTimeMillis() - time));
     }
     
     private static void encode(File input, File output)
     {
         try
         {
+            long time = System.currentTimeMillis();
             BufferedReader reader = new BufferedReader(new FileReader(input));
             HashMap<Character, Integer> counts = new HashMap<Character, Integer>();
             int nextChar = reader.read();
@@ -43,7 +46,9 @@ public class Encode
             }
             
             reader.close();
+            System.out.println("First Read Took: " + (System.currentTimeMillis() - time));
             
+            time = System.currentTimeMillis();
             // Add EOF
             counts.put((char) 0, 1);
             
@@ -65,20 +70,25 @@ public class Encode
                 codes.put(current.getCharacter(), current.getCode());
             }
             
+            System.out.println("Tree Shit Took: " + (System.currentTimeMillis() - time));
+            time = System.currentTimeMillis();
+            
             FileOutputStream writer = new FileOutputStream(output);
             
             //First output code book
             writer.write(canonicalTree.getEncodingBook());
-            
+
             //Write out the rest
             reader = new BufferedReader(new FileReader(input));
             nextChar = (char) reader.read();
             StringBuilder buffer = new StringBuilder();
-
+            byte[] buf = new byte[10_000_000];
+            int bufC = 0;
+            
             while (nextChar != -1)
             {
                 buffer.append(codes.get((char) nextChar));
-                
+                                
                 if (buffer.length() >= 8)
                 {
                     byte toWrite = 0;
@@ -90,12 +100,27 @@ public class Encode
                         power--;
                     }
                     buffer.delete(0, 8);
-
-                    writer.write(toWrite);
+                    
+                    //writer.write(toWrite);
+                    buf[bufC] = toWrite;
+                    bufC++;
+                    if(buf.length == bufC)
+                    {
+                        System.out.println("Buffer full: Writing.");
+                        long write = System.currentTimeMillis();
+                        writer.write(buf);
+                        bufC = 0;
+                        System.out.println("Took: " + (System.currentTimeMillis() - write));
+                    }
                 }
-
+                                
                 nextChar = reader.read();
             }
+            
+            writer.write(buf, 0, bufC);
+            bufC = 0;
+            
+            System.out.println("Writing Rest Took: " + (System.currentTimeMillis() - time));
                         
             //Add EOF
             buffer.append(codes.get((char) 0));
@@ -120,8 +145,19 @@ public class Encode
                 
                 buffer.delete(0, 8);
 
-                writer.write(toWrite);
+                buf[bufC] = toWrite;
+                bufC++;
+                if(buf.length == bufC)
+                {
+                    System.out.println("Buffer full: Writing.");
+                    long write = System.currentTimeMillis();
+                    writer.write(buf);
+                    bufC = 0;
+                    System.out.println("Took: " + (System.currentTimeMillis() - write));
+                }
             }
+            
+            writer.write(buf, 0, bufC);
             
             writer.flush();
             writer.close();

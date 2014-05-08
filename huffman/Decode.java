@@ -16,7 +16,7 @@ public class Decode
 {
     public static void main(String[] args)
     {
-        decode(new File("test.huf"), new File("test5.txt"));
+        decode(new File("test.huf"), new File("veryTest.txt"));
     }
 
     private static void decode(File input, File output)

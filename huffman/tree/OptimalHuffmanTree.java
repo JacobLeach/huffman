@@ -73,7 +73,7 @@ public class OptimalHuffmanTree
         // If this is a leaf node
         if ((current.getLeft() == null) && (current.getRight() == null))
         {
-            System.out.println("Found: " + current.getChar() + ", Code: " + code + ", Length: " + code.length());
+            //System.out.println("Found: " + current.getChar() + ", Code: " + code + ", Length: " + code.length());
             codes.add(new HuffmanCode(current.getChar(), code.length()));
         }
         
